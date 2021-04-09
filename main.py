@@ -13,6 +13,7 @@ with open(source_file) as f:
     reader = csv.DictReader(f)
     for row in reader:
         interface_config = interface_template.render(
+            device_name=row["Device Name"],
             interface=row["Interface"],
             connected=row["Connected"],
             link=row["Link"],

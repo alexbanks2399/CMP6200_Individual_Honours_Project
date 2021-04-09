@@ -1,4 +1,4 @@
-! Generated from 'switchport-interface-template.j2'
+! Generated from 'switchport-interface-template.j2' for device {{device_name}}
 interface {{ interface }}
 	description Connected to {{ connected }} {{ link }} for {{ purpose }}
 	switchport
@@ -11,4 +11,5 @@ interface {{ interface }}
 	spanning-tree bdpuguard enable
 	{% endif -%}
 	no shutdown
-
+	end
+!
