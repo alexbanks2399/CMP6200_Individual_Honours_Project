@@ -1,5 +1,7 @@
 import csv
 import datetime
+from netmiko import Netmiko
+
 from jinja2 import Template
 
 source_file = "switch_data.csv"
@@ -30,4 +32,9 @@ def config_generator():
         f.write(generated_configs)
 
 
+def config_applier():
+    pass
+
+
 config_generator()
+config_applier()
