@@ -1,12 +1,28 @@
 import csv
 import datetime
+import tkinter
+from tkinter import *
 from netmiko import Netmiko
 from jinja2 import Template
 import getpass
 
 start_time = datetime.datetime.now()
-source_file = "switch_data.csv"
-interface_template_file = "switchport-interface-template.j2"
+
+
+# source_file = "switch_data.csv"
+# interface_template_file = "switchport-interface-template.j2"
+
+
+def file_browser():
+    tkinter.askopenfilename(parent=tkinter,
+                            initialdir="C:\My Documents\Documents",
+                            title="Select a file",
+                            filetypes=(("All files", "*.*"),
+                                       ("Text files", "*.txt"),
+                                       ("CSV files", "*.csv"),
+                                       ("Jinja Templates", "*.j2"))
+                            )
+    tkinter.mainloop()
 
 
 def config_generator():
@@ -57,8 +73,9 @@ def config_applier():
             password=password,
             device_type="cisco_ios",
             secret=secret)
-    pass
 
 
+source_file = file_browser()
+interface_template_file = file_browser()
 config_generator()
 # config_applier()
