@@ -4,7 +4,7 @@ import getpass
 from netmiko import Netmiko
 from jinja2 import Template
 
-# Pseudo code
+# Planned pseudo code
 # Ask user for input files; device data, template file
 # Generate config to apply
 # Ask user for device credentials
@@ -23,14 +23,14 @@ def config_generator():
 
     with open(interface_template_file) as f:
         interface_template = Template(f.read(), keep_trailing_newline=True, autoescape=True)
-    with open(source_file) as f:
+    with open(source_file, encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
         for row in reader:
             generated_config = interface_template.render(
                 device_name=row["Device Name"],
                 date_time=datetime.datetime.now().isoformat(timespec='minutes'),
                 interface=row["Interface"],
-                connected=row["Connected"],
+                connected=row["Connected to"],
                 link=row["Link"],
                 purpose=row["Purpose"],
                 vlan=row["VLAN"]
@@ -43,8 +43,10 @@ def config_generator():
 
     with open(device_name + "_config.txt", "a") as f:
         f.write(generated_configs)
+        print("Config file: ", f.name)
     with open("device_list.txt", "a") as f:
         f.write(device_ips + "\n")
+        print("Device list: ", f.name)
 
 
 def config_applier():
