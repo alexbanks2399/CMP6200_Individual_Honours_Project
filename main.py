@@ -41,7 +41,7 @@ def config_generator():
             generated_configs += generated_config
             device_ips += device_ip + "\n"
 
-    with open(device_name + "_config.txt", "a") as f:
+    with open("configs.txt", "a") as f:
         f.write(generated_configs)
         print("Config file: ", f.name)
     with open("device_list.txt", "a") as f:
@@ -51,6 +51,7 @@ def config_generator():
 
 def config_applier():
     sites = open("device_list.txt")
+    config = open("configs.txt")
     devicelist = []
     username = input("Input device username: ")
     password = getpass.getpass("Input device password: ")
@@ -60,6 +61,8 @@ def config_applier():
         line = line.rstrip()
         devicelist.append(line)
 
+    config_set = config.split("\n")
+
     for host in devicelist:
         net_connect = Netmiko(
             host,
@@ -67,6 +70,19 @@ def config_applier():
             password=password,
             device_type="cisco_ios",
             secret=secret)
+
+        print(net_connect.find_prompt())
+        net_connect.enable()
+
+        output = net_connect.send_config_set(config_set)
+        net_connect.save_config()
+        print(net_connect.send_command("show int status"))
+        net_connect.disconnect()
+
+        with open("audit.txt", "a") as f:
+            f.write(output)
+
+        print("See 'audit.txt' for confirmation of process")
 
 
 config_generator()
