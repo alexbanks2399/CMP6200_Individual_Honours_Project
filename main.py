@@ -13,17 +13,14 @@ from jinja2 import Template
 
 start_time = datetime.datetime.now()
 
-source_file = "switch_data.csv"
-interface_template_file = "switchport-interface-template.j2"
-
 
 def config_generator():
     generated_configs = ""
     device_ips = ""
 
-    with open(interface_template_file) as f:
+    with open("switchport-interface-template.j2") as f:
         interface_template = Template(f.read(), keep_trailing_newline=True, autoescape=True)
-    with open(source_file, encoding="utf-8-sig") as f:
+    with open("switch_data.csv", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
         for row in reader:
             generated_config = interface_template.render(
@@ -44,46 +41,46 @@ def config_generator():
     with open("configs.txt", "a") as f:
         f.write(generated_configs)
         print("Config file: ", f.name)
-    with open("device_list.txt", "a") as f:
+    with open("device_generated.txt", "a") as f:
         f.write(device_ips + "\n")
         print("Device list: ", f.name)
 
 
 def config_applier():
-    sites = open("device_list.txt")
     config = open("configs.txt")
     devicelist = []
+    device = open("device_generated.txt")
     username = input("Input device username: ")
     password = getpass.getpass("Input device password: ")
     secret = getpass.getpass("Input device secret: ")
 
-    for line in sites:
+    for line in device:
         line = line.rstrip()
         devicelist.append(line)
 
-    config_set = config.split("\n")
+    config_set = config
 
     for host in devicelist:
         net_connect = Netmiko(
             host,
             username=username,
             password=password,
-            device_type="cisco_ios",
+            device_type="cisco_nxos",
             secret=secret)
 
         print(net_connect.find_prompt())
-        net_connect.enable()
+        print(net_connect.enable())
 
         output = net_connect.send_config_set(config_set)
-        net_connect.save_config()
-        print(net_connect.send_command("show int status"))
-        net_connect.disconnect()
+        print(net_connect.send_config_set(config_set))
+        print(net_connect.save_config())
+        print(net_connect.disconnect())
 
         with open("audit.txt", "a") as f:
             f.write(output)
 
-        print("See 'audit.txt' for confirmation of process")
+    print("See 'audit.txt' for confirmation of process")
 
 
 config_generator()
-# config_applier()
+config_applier()

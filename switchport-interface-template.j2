@@ -1,4 +1,5 @@
 ! Generated from 'switchport-interface-template.j2' for device '{{device_name}}' at {{date_time}}
+configure terminal
 interface {{ interface }}
     {% if connected == "empty" -%}
     description UNUSED
@@ -6,17 +7,17 @@ interface {{ interface }}
     switchport access vlan 555
     shutdown
     end
-    {% else -%}
-    {% endif -%}
+    {% elif vlan == "trunk" -%}
 	description Connected to {{ connected }} {{ link }} for {{ purpose }}
-	{% if vlan == "trunk" -%}
 	switchport mode trunk
+	no shutdown
+	end
 	{% else -%}
 	switchport mode access
 	switchport access vlan {{ vlan }}
 	spanning-tree portfast
 	spanning-tree bdpuguard enable
-	{% endif -%}
 	no shutdown
 	end
+	{% endif -%}
 !
