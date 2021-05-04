@@ -1,4 +1,4 @@
-! Generated from 'switchport-interface-template.j2' for device '{{device_name}}' at {{date_time}}
+! Generated from 'switchport-interface-template.j2'
 configure terminal
 interface {{ interface }}
     {% if connected == "empty" -%}
@@ -13,6 +13,7 @@ interface {{ interface }}
 	no shutdown
 	end
 	{% else -%}
+	description Connected to {{ connected }} {{ link }} for {{ purpose }}
 	switchport mode access
 	switchport access vlan {{ vlan }}
 	spanning-tree portfast
@@ -20,4 +21,3 @@ interface {{ interface }}
 	no shutdown
 	end
 	{% endif -%}
-!
