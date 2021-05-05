@@ -1,23 +1,23 @@
-! Generated from 'switchport-interface-template.j2'
+! Generated from 'switchport-interface-template.j2' on {{date_now}} at {{time_now}}
 configure terminal
 interface {{ interface }}
-    {% if connected == "empty" -%}
-    description UNUSED
-    switchport mode access
-    switchport access vlan 555
-    shutdown
-    end
-    {% elif vlan == "trunk" -%}
-	description Connected to {{ connected }} {{ link }} for {{ purpose }}
-	switchport mode trunk
-	no shutdown
-	end
-	{% else -%}
-	description Connected to {{ connected }} {{ link }} for {{ purpose }}
-	switchport mode access
-	switchport access vlan {{ vlan }}
-	spanning-tree portfast
-	spanning-tree bdpuguard enable
-	no shutdown
-	end
-	{% endif -%}
+{% if connected == "empty" -%}
+description UNUSED
+switchport mode access
+switchport access vlan 555
+shutdown
+end
+{% elif vlan == "trunk" -%}
+description Connected to {{ connected }} {{ link }} for {{ purpose }}
+switchport mode trunk
+no shutdown
+end
+{% else -%}
+description Connected to {{ connected }} {{ link }} for {{ purpose }}
+switchport mode access
+switchport access vlan {{ vlan }}
+spanning-tree portfast
+spanning-tree bdpuguard enable
+no shutdown
+end
+{% endif -%}

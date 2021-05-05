@@ -12,6 +12,11 @@ from jinja2 import Template
 
 start_time = datetime.datetime.now()
 
+date_now = start_time.strftime("%x")
+time_now = start_time.strftime("%X")
+
+print("Date & time: ", date_now, time_now)
+
 generated_configs = ""
 input_csv = input("Input file: ")
 
@@ -26,7 +31,9 @@ with open(input_csv, encoding="utf-8-sig") as f:
             connected=row["Connected to"],
             link=row["Link"],
             purpose=row["Purpose"],
-            vlan=row["VLAN"]
+            vlan=row["VLAN"],
+            date_now=date_now,
+            time_now=time_now
         )
 
         generated_configs += generated_config
