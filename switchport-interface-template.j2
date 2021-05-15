@@ -17,7 +17,7 @@ description Connected to {{ connected }} {{ link }} for {{ purpose }}
 switchport mode access
 switchport access vlan {{ vlan }}
 spanning-tree portfast
-spanning-tree bdpuguard enable
+spanning-tree bpduguard enable
 no shutdown
 end
 {% endif -%}
